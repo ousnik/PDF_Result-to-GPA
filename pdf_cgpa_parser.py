@@ -49,11 +49,13 @@ def getLongestIncSubArrIndex( arr, n) :
 
 path = input('Enter your file path: ')
 path = path.replace('\\' ,"\\\\")
+
+# Contains all the text in the PDF
 all_text = convert_pdf_to_txt(path)
-
-# print(all_text)
-
+# Creates a list based on each line
 all_text = all_text.split("\n")
+
+# Creates a list of allowed values
 allowed_grade = [chr(i) for i in range(65,65+26)]
 allowed_grade.extend([chr(i)+'+' for i in range(65,65+26)])
 allowed_grade.append('Ab')
@@ -61,48 +63,41 @@ allowed_grade.append('Ab')
 allowed_number=[]
 allowed_number.extend([str(i) for i in range(1,21)])
 
-
+# Segregates on the basis of length of lines and allowed values
 one_or_two =[]
-
 for i in all_text:
     if len(i) <= 2 and ((i in allowed_grade) or (i in allowed_number) ):
         one_or_two.append(i)
 
-# print(one_or_two)
-
+# Creates list of grades available
 grade=[]
 for i in range(len(one_or_two)):
     if one_or_two[i] in allowed_grade:
         grade.append(one_or_two[i])
-
 for i in grade:
     one_or_two.remove(i)
 
+# Converts char to int in the lists
 one_or_two = list(map(int,one_or_two)) 
 allowed_number = list(map(int,allowed_number)) 
 
-# print(allowed_number)
-# print(one_or_two)
-# print(grade)
-
+# Gets left and right index of the longest increasing subarray
 sno_left,sno_right=getLongestIncSubArrIndex(one_or_two,len(one_or_two))
+
+# Creates a list of available serial numbers
 sno = []
 for i in range(sno_left,sno_right):
     sno.append(one_or_two[i])
-
 temp=0
 for i in range(sno_left,sno_right):
     one_or_two.pop(i-temp)
     temp+=1
-# print(one_or_two)
-# print(sno)
 
+# Divides one_or_two into two lists by the middle
 A=one_or_two[:len(one_or_two)//2]
 B=one_or_two[len(one_or_two)//2:]
 
-# print(A.count(mode(A)))
-# print(B.count(mode(B)))
-
+# Recognizes which is semster list and which is credit list
 try:
     if A.count(mode(A)) > B.count(mode(B)):
         semester=A
@@ -128,9 +123,10 @@ print(credits)
 print('Grades:',end=' ')
 print(grade)
 
+# Calculates total credits in the semester
 total_credits = sum(credits)
-# print (total_credits)
 
+# Dictionary linking grade to grade_point
 grade_to_gradepoint = {
     'O':10,   
     'A+':9,
@@ -144,6 +140,7 @@ grade_to_gradepoint = {
     'I':0
 }
 
+# Creates list of gradepoints based on grades
 gradepoint = list(map(lambda x:grade_to_gradepoint[x],grade))
 print('Grade Points:',end=' ')
 print(gradepoint)
@@ -151,7 +148,10 @@ print(gradepoint)
 print('Total Credits:',end=' ')
 print(total_credits)
 
+# Pairs gradepoint with credits
 final_pair = zip(credits,gradepoint)
+
+# SGPA calculation
 sgpa = 0
 for i,j in final_pair:
     sgpa += i*j
